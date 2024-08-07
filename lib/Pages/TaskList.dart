@@ -197,7 +197,7 @@ class _TaskListState extends State<TaskList> {
                         ),
                         onTap: () async {
                           await Navigator.push(context, MaterialPageRoute(builder: (_)=>EditScreen(taskData,index)));
-                          taskData.removeAt(index);
+                         // taskData.removeAt(index);
 
 
                         },

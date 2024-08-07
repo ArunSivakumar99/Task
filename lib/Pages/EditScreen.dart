@@ -40,6 +40,10 @@ class _EditScreenState extends State<EditScreen> {
     super.initState();
 
   }
+  onBackPressed(){
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=>TaskList()), (route)=>false);
+
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -56,77 +60,82 @@ class _EditScreenState extends State<EditScreen> {
               fontWeight: FontWeight.w500,
 
             ),),
-          automaticallyImplyLeading: true,
+          automaticallyImplyLeading: false,
 
 
         ),
-        body:Padding(
-          padding: EdgeInsets.symmetric(
-              vertical: ScreenUtility.displayHeight(context)*0.01,
-              horizontal: ScreenUtility.displayWidth(context)*0.02
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              textContainer(taskNameController, "Task name", "Name"),
-              textContainer(taskStatusController, "Task status", "Status"),
-              textContainer(taskDescriptionController, "Task Description", "Description"),
-              textContainer(taskDueDateController, "Task Due Date", "Date"),
-              SizedBox(
-                height: ScreenUtility.displayHeight(context)*0.01,
-              ),
-              Container(
-                padding: EdgeInsets.only(
-                    left: ScreenUtility.displayWidth(context) * 0.01,
-                    right: ScreenUtility.displayWidth(context) * 0.01),
-                child: ElevatedButton(
+        body:WillPopScope(
+          onWillPop: (){
+            return onBackPressed();
+          },
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                vertical: ScreenUtility.displayHeight(context)*0.01,
+                horizontal: ScreenUtility.displayWidth(context)*0.02
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                textContainer(taskNameController, "Task name", "Name"),
+                textContainer(taskStatusController, "Task status", "Status"),
+                textContainer(taskDescriptionController, "Task Description", "Description"),
+                textContainer(taskDueDateController, "Task Due Date", "Date"),
+                SizedBox(
+                  height: ScreenUtility.displayHeight(context)*0.01,
+                ),
+                Container(
+                  padding: EdgeInsets.only(
+                      left: ScreenUtility.displayWidth(context) * 0.01,
+                      right: ScreenUtility.displayWidth(context) * 0.01),
+                  child: ElevatedButton(
 
-                    onPressed: () async{
-                      setState(() {
-                        taskModelResponse.taskStatus=taskStatusController.text;
-                        taskModelResponse.taskDescrition=taskDescriptionController.text;
-                        taskModelResponse.taskName=taskNameController.text;
-                        taskModelResponse.taskDate=taskDueDateController.text;
-                        taskData.add(taskModelResponse);
-                      });
-                       updateTask(taskData);
-                      // await sharedPrefs.load();
+                      onPressed: () async{
+                        setState(() {
+                          taskModelResponse.taskStatus=taskStatusController.text;
+                          taskModelResponse.taskDescrition=taskDescriptionController.text;
+                          taskModelResponse.taskName=taskNameController.text;
+                          taskModelResponse.taskDate=taskDueDateController.text;
+                          taskData.add(taskModelResponse);
+                        });
+                         updateTask(taskData);
+                        // await sharedPrefs.load();
 
 
-                    },
-                    style: ElevatedButton.styleFrom(
+                      },
+                      style: ElevatedButton.styleFrom(
 
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.sp),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.sp),
+                        ),
+                        padding: const EdgeInsets.all(0.0),
+
                       ),
-                      padding: const EdgeInsets.all(0.0),
-
-                    ),
-                    child: Container(
-                      alignment: Alignment.center,
-                      height:
-                      ScreenUtility.displayHeight(context) * 0.055,
-                      //width: ScreenUtility.displayWidth(context)*2,
-                      decoration: BoxDecoration(
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(5.sp)),
-                          color: Colors.red),
-                      child: Text(
-                          "Update",
-                          style: Theme.of(context)
-                              .textTheme
-                              .displayLarge
-                              ?.copyWith(
-                              fontSize: 14.sp,
-                              color: AppColors.white,
-                              fontWeight: FontWeight.w500)),
-                    )),
-              )
+                      child: Container(
+                        alignment: Alignment.center,
+                        height:
+                        ScreenUtility.displayHeight(context) * 0.055,
+                        //width: ScreenUtility.displayWidth(context)*2,
+                        decoration: BoxDecoration(
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(5.sp)),
+                            color: Colors.red),
+                        child: Text(
+                            "Update",
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayLarge
+                                ?.copyWith(
+                                fontSize: 14.sp,
+                                color: AppColors.white,
+                                fontWeight: FontWeight.w500)),
+                      )),
+                )
 
 
 
 
-            ],
+              ],
+            ),
           ),
         )
     );
@@ -184,10 +193,12 @@ class _EditScreenState extends State<EditScreen> {
     );
   }
   Future<void> updateTask(List<TaskModelResponse> task) async {
+
     print(widget.index);
     task.addAll(await getList());
-     task.removeAt(widget.index);
-     //task.add(taskModelResponse);
+    task.removeAt(widget.index+1);
+
+    //task.add(taskModelResponse);
 
     setState(() {
       print(task.length);
